@@ -1,41 +1,56 @@
 services:
   ai.category:
+    # build: .
     image: category:latest
     ports:
       - "10034:10034"
     restart: always
 
   ai.sentiment:
+    # build: .
     image: sentitment_gpu:latest
     ports:
       - "10031:10031"
     restart: always
 
   ai.ner:
+    # build: .
     image: ner:latest
     ports:
       - "10030:10030"
     restart: always
 
   tagger.category:
-    image: .
+    # build: .
+    image: tagger.category
     restart: always
 
   tagger.sentiment:
-    image: .
+    # build: .
+    image: tagger.sentiment
     restart: always
 
   tagger.ner:
-    image: .
+    # build: .
+    image: tagger.ner
     restart: always
 
-  data-access:
-    image: .
+  tagger.info:
+    # build: .
+    image: tagger.info
+    restart: always
+
+  data:
+    # build: .
+    image: data
     restart: always
     ports:
       - "8000:8000"
 
-
-
-
+  ui:
+    # build: .
+    image: jahanbin-ui
+    restart: always
+    ports:
+      - "3000:3000"
 
