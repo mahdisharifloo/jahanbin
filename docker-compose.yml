@@ -1,0 +1,41 @@
+services:
+  ai.category:
+    image: category:latest
+    ports:
+      - "10034:10034"
+    restart: always
+
+  ai.sentiment:
+    image: sentitment_gpu:latest
+    ports:
+      - "10031:10031"
+    restart: always
+
+  ai.ner:
+    image: ner:latest
+    ports:
+      - "10030:10030"
+    restart: always
+
+  tagger.category:
+    image: .
+    restart: always
+
+  tagger.sentiment:
+    image: .
+    restart: always
+
+  tagger.ner:
+    image: .
+    restart: always
+
+  data-access:
+    image: .
+    restart: always
+    ports:
+      - "8000:8000"
+
+
+
+
+

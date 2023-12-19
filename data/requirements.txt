@@ -1,0 +1,13 @@
+python-dotenv==0.20.0
+unidecode
+uvicorn
+fastapi
+pymongo
+persiantools
+pytz
+pyjwt
+pydantic
+passlib
+python-multipart
+bcrypt
+wordcloud-fa
