@@ -1,48 +1,48 @@
 services:
   ai.category:
     # build: .
-    image: category:latest
+    image: cc1241c03b43
     ports:
-      - "10034:10034"
+      - "10014:10034"
     restart: always
 
   ai.sentiment:
     # build: .
-    image: sentitment_gpu:latest
+    image: 6c06c0231d53
     ports:
-      - "10031:10031"
+      - "10011:10031"
     restart: always
 
   ai.ner:
     # build: .
-    image: ner:latest
+    image: b6395bfa009a
     ports:
-      - "10030:10030"
+      - "10010:10030"
     restart: always
 
   tagger.category:
-    # build: .
-    image: tagger.category
+    build: taggers/category_tagger
+    # image: tagger.category
     restart: always
 
   tagger.sentiment:
-    # build: .
-    image: tagger.sentiment
+    build: taggers/sentiment_tagger
+    # image: tagger.sentiment
     restart: always
 
   tagger.ner:
-    # build: .
-    image: tagger.ner
+    build: taggers/ner_tagger
+    # image: tagger.ner
     restart: always
 
   tagger.info:
-    # build: .
-    image: tagger.info
+    build: taggers/info_tagger
+      # image: tagger.info
     restart: always
 
   data:
-    # build: .
-    image: data
+    build: data
+    # image: data
     restart: always
     ports:
       - "8000:8000"
