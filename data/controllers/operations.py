@@ -15,6 +15,8 @@ from wordcloud_fa import WordCloudFa
 root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.insert(0, root_path)
 from models.app import *
+import utils.config as cfg 
+
 
 wc = WordCloudFa(
     # font_path="components/Vazir-Thin.ttf",
@@ -55,7 +57,7 @@ def get_random_data(generation_rate: int, down_limit: int, up_limit: int):
 
 
 def get_category(caption):
-    url = "http://94.182.215.116:10034/category"
+    url = f"http://{cfg.CATEGORY_HOST}:10034/category"
     querystring = {"prompt": caption}
     payload = ""
     headers = {"accept": "application/json"}
@@ -67,7 +69,7 @@ def get_category(caption):
 
 
 def get_sentiment(caption):
-    url = "http://94.182.215.116:10031/sentiment_analysis"
+    url = f"http://{cfg.SENTIMENT_HOST}:10031/sentiment_analysis"
     querystring = {"prompt": caption}
     payload = ""
     headers = {"accept": "application/json"}

@@ -5,48 +5,52 @@ services:
     ports:
       - "10014:10034"
     restart: always
-    networks:
-      - mynetwork
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
 
   ai.sentiment:
     image: 6c06c0231d53
     ports:
       - "10011:10031"
     restart: always
-    networks:
-      - mynetwork
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
 
   ai.ner:
     image: b6395bfa009a
     ports:
       - "10010:10030"
     restart: always
-    networks:
-      - mynetwork
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
 
   tagger.category:
     build: taggers/category_tagger
     restart: always
-    networks:
-      - mynetwork
+    depends_on:
+      - ai.category
 
   tagger.sentiment:
     build: taggers/sentiment_tagger
     restart: always
-    networks:
-      - mynetwork
+    depends_on:
+      - ai.sentiment
 
   tagger.ner:
     build: taggers/ner_tagger
     restart: always
-    networks:
-      - mynetwork
+    depends_on:
+      - ai.ner
 
   tagger.info:
     build: taggers/info_tagger
     restart: always
-    networks:
-      - mynetwork
+    depends_on:
+      - ai.sentiment
+      - ai.category
 
   # data:
   #   build: data

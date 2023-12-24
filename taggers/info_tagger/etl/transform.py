@@ -50,7 +50,7 @@ def get_info_response(payload):
     # payload = payload.replace('\t','\\t')
     if len(payload) > 1000:
         payload = payload[:1000]
-    url = f"http://94.182.215.116:8000/instagram/rule_base_info_service?caption={payload}"
+    url = f"http://{cfg.BACKEND_HOST}:8000/instagram/rule_base_info_service?caption={payload}"
     payload = {}
     headers = {
     'accept': 'application/json',
