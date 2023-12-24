@@ -1,13 +1,11 @@
-
-#FROM huggingface/transformers-gpu:latest
-FROM nvidia/cuda:12.2.2-devel-ubi8
+FROM huggingface/transformers-gpu:latest
 
 WORKDIR /code
 
-#RUN rm /etc/apt/sources.list.d/cuda.list
-#RUN rm /etc/apt/sources.list.d/nvidia-ml.list
+RUN rm /etc/apt/sources.list.d/cuda.list
+RUN rm /etc/apt/sources.list.d/nvidia-ml.list
 
-#RUN yum update
+RUN   apt-get update
 
 
 COPY ./requirements.txt /code/requirements.txt

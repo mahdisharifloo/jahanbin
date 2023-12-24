@@ -54,4 +54,4 @@ async def read_index():
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=10036)
+    uvicorn.run(app, host="0.0.0.0", port=10034)
