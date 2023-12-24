@@ -38,6 +38,7 @@ def run(instagram  ,
         telegram_group  , 
         telegram_channel , 
         news_agency):
+    
     result_instagram = ''
     result_twitter = '' 
     result_telegram_group = ''
@@ -47,7 +48,7 @@ def run(instagram  ,
         instagram_model = instagramModel()
         instagram_operations = [
             UpdateOne({'_id': d['_id']}, 
-            {'$set': {'category': d['category']}}, upsert=True) for d in instagram]
+            {'$set': {'information_service_tag': d['information_service_tag']}}, upsert=True) for d in instagram]
         result_instagram = instagram_model.collection.bulk_write(instagram_operations)
     except Exception as e:
         print(e)
@@ -56,38 +57,38 @@ def run(instagram  ,
         twitter_model = TwitterModel()
         twitter_operations = [
             UpdateOne({'_id': d['_id']}, 
-            {'$set': {'category': d['category']}}, upsert=True) for d in twitter]
+            {'$set': {'information_service_tag': d['information_service_tag']}}, upsert=True) for d in twitter]
         result_twitter = twitter_model.collection.bulk_write(twitter_operations)
     except Exception as e:
         print(e)
-
+        
     try:
         telegram_group_model = TelegramGroupModel()
         telegram_group_operations = [
             UpdateOne({'_id': d['_id']}, 
-            {'$set': {'category': d['category']}}, upsert=True) for d in telegram_group]
+            {'$set': {'information_service_tag': d['information_service_tag']}}, upsert=True) for d in telegram_group]
         result_telegram_group = telegram_group_model.collection.bulk_write(telegram_group_operations)
     except Exception as e:
         print(e)
-
+        
     try:
         telegram_channel_model = TelegramChannelModel()
         telegram_channel_operations = [
             UpdateOne({'_id': d['_id']}, 
-            {'$set': {'category': d['category']}}, upsert=True) for d in telegram_channel]
+            {'$set': {'information_service_tag': d['information_service_tag']}}, upsert=True) for d in telegram_channel]
         result_telegram_channel = telegram_channel_model.collection.bulk_write(telegram_channel_operations)
     except Exception as e:
         print(e)
-
+        
     try:
         news_agency_model = NewsAgencyModel()
         news_agency_operations = [
             UpdateOne({'_id': d['_id']}, 
-            {'$set': {'category': d['category']}}, upsert=True) for d in news_agency]
+            {'$set': {'information_service_tag': d['information_service_tag']}}, upsert=True) for d in news_agency]
         result_news_agency = news_agency_model.collection.bulk_write(news_agency_operations)
     except Exception as e:
         print(e)
-
+        
     return  result_instagram,\
             result_twitter,\
             result_telegram_group,\

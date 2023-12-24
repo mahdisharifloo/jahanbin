@@ -37,4 +37,4 @@ if __name__ == '__main__':
         except Exception as e:
             log.error(e)
         print('working done')
-        time.sleep(0.2)
+        time.sleep(5)

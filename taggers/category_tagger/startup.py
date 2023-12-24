@@ -36,6 +36,7 @@ if __name__ == '__main__':
             log.info("data tagger Ran Successfully")
 
             print('working done')
-            time.sleep(0.2)
+            time.sleep(5)
         except Exception as e:
             print(e)
+            time.sleep(1000)

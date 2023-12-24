@@ -11,7 +11,7 @@ def get_sentiment_response(payload):
     if len(payload) > 1000:
         payload = payload[:1000]
     querystring = {"prompt":payload.encode('utf-8')}
-    url = f"http://{cfg.SENTIMENT_HOST}:10021/sentiment_analysis"
+    url = f"http://{cfg.SENTIMENT_HOST}:10031/sentiment_analysis"
     headers = {
         'accept': '*/*',
         'Content-Type': 'application/json'

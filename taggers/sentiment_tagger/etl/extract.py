@@ -1,5 +1,6 @@
 from utils.mongo import Mongo
 from utils.logger import Logger
+from datetime import datetime, timedelta, date
 
 log = Logger("Filtering")
 
@@ -40,6 +41,17 @@ def run(count):
     news_agency_model = NewsAgencyModel()
     
     query = {"sentiment":None}
+    today = datetime.combine(date.today(), datetime.min.time())  + timedelta(days=1) 
+    day_limit = 30
+    query = {
+    '$and': [
+        {"created_at": {"$gt": today - timedelta(days=day_limit)}},
+        {"created_at": {"$lte": today}},
+        {"sentiment":None}
+
+]}
+
+
     
     #initalizing iterators 
     instagram_posts_iterator = instagram_model.collection.find(query).limit(count)

@@ -1,4 +1,0 @@
-python-dotenv>=0.20.0
-python-multipart
-pymongo
-requests

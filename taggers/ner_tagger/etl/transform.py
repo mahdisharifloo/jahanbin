@@ -11,7 +11,7 @@ def get_ner_response(payload):
     if len(payload) > 1000:
         payload = payload[:1000]
     querystring = {"prompt":payload.encode('utf-8')}
-    url = f"http://{cfg.NER_HOST}:10020/ner"
+    url = f"http://{cfg.NER_HOST}:10030/ner"
     headers = {
         'accept': '*/*',
         'Content-Type': 'application/json'

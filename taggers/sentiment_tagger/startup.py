@@ -29,8 +29,12 @@ def run(instagram  , twitter , telegram_group  , telegram_channel , news_agency)
 
 if __name__ == '__main__':
     while True:
-        instagram  , twitter , telegram_group  , telegram_channel , news_agency = extract.run(1)
-        run(instagram  , twitter , telegram_group  , telegram_channel , news_agency)
-        log.info("data tagger Ran Successfully")
-        print('working done')
-        time.sleep(0.2)
+        try:
+            instagram  , twitter , telegram_group  , telegram_channel , news_agency = extract.run(1)
+            run(instagram  , twitter , telegram_group  , telegram_channel , news_agency)
+            log.info("data tagger Ran Successfully")
+            print('working done')
+            time.sleep(0.2)
+        except Exception as e :
+            print("ERROR -----> " , e)
+            time.sleep(100)
