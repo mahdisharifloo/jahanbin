@@ -1,58 +1,69 @@
 version: '3'
-
-
 services:
   ai.category:
     image: cc1241c03b43
     ports:
       - "10014:10034"
     restart: always
-    network_mode: "host"
+    networks:
+      - mynetwork
 
   ai.sentiment:
     image: 6c06c0231d53
     ports:
       - "10011:10031"
     restart: always
-    network_mode: "host"
+    networks:
+      - mynetwork
 
   ai.ner:
     image: b6395bfa009a
     ports:
       - "10010:10030"
     restart: always
-    network_mode: "host"
+    networks:
+      - mynetwork
 
   tagger.category:
     build: taggers/category_tagger
     restart: always
-    network_mode: "host"
+    networks:
+      - mynetwork
 
   tagger.sentiment:
     build: taggers/sentiment_tagger
     restart: always
-    network_mode: "host"
+    networks:
+      - mynetwork
 
   tagger.ner:
     build: taggers/ner_tagger
     restart: always
-    network_mode: "host"
+    networks:
+      - mynetwork
 
   tagger.info:
     build: taggers/info_tagger
     restart: always
-    network_mode: "host"
+    networks:
+      - mynetwork
 
-  data:
-    build: data
-    restart: always
-    ports:
-      - "8000:8000"
-    network_mode: "host"
+  # data:
+  #   build: data
+  #   restart: always
+  #   ports:
+  #     - "8000:8000"
+  #   networks:
+  #     - mynetwork
 
-  ui:
-    image: jahanbin-ui
-    restart: always
-    ports:
-      - "3000:3000"
-    network_mode: "host"
+  # ui:
+  #   image: jahanbin-ui
+  #   restart: always
+  #   ports:
+  #     - "3000:3000"
+  #   networks:
+  #     - mynetwork
+
+networks:
+  mynetwork:
+    driver: bridge
