@@ -1,56 +1,58 @@
+version: '3'
+
+
 services:
   ai.category:
-    # build: .
     image: cc1241c03b43
     ports:
       - "10014:10034"
     restart: always
+    network_mode: "host"
 
   ai.sentiment:
-    # build: .
     image: 6c06c0231d53
     ports:
       - "10011:10031"
     restart: always
+    network_mode: "host"
 
   ai.ner:
-    # build: .
     image: b6395bfa009a
     ports:
       - "10010:10030"
     restart: always
+    network_mode: "host"
 
   tagger.category:
     build: taggers/category_tagger
-    # image: tagger.category
     restart: always
+    network_mode: "host"
 
   tagger.sentiment:
     build: taggers/sentiment_tagger
-    # image: tagger.sentiment
     restart: always
+    network_mode: "host"
 
   tagger.ner:
     build: taggers/ner_tagger
-    # image: tagger.ner
     restart: always
+    network_mode: "host"
 
   tagger.info:
     build: taggers/info_tagger
-      # image: tagger.info
     restart: always
+    network_mode: "host"
 
   data:
     build: data
-    # image: data
     restart: always
     ports:
       - "8000:8000"
+    network_mode: "host"
 
   ui:
-    # build: .
     image: jahanbin-ui
     restart: always
     ports:
       - "3000:3000"
-
+    network_mode: "host"
