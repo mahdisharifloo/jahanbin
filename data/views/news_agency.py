@@ -101,3 +101,8 @@ async def get_tag_cload_end_point(days_ago=30,
                              current_user: User = Depends(get_current_active_user)):
     data = ops.generate_word_frequencies(int(days_ago))
     return data
+
+@router.get("/NewsAgency/get_tagging_status", tags=["NewsAgency"])
+async def get_tagging_status_end_point(current_user: User = Depends(get_current_active_user)):
+    data = ops.get_tagging_status()
+    return data

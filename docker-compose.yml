@@ -52,13 +52,13 @@ services:
       - ai.sentiment
       - ai.category
 
-  # data:
-  #   build: data
-  #   restart: always
-  #   ports:
-  #     - "8000:8000"
-  #   networks:
-  #     - mynetwork
+  data:
+    build: data
+    restart: always
+    ports:
+      - "9000:8000"
+    networks:
+      - mynetwork
 
   # ui:
   #   image: jahanbin-ui

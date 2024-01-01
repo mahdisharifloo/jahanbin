@@ -58,6 +58,7 @@ def get_random_data(generation_rate: int, down_limit: int, up_limit: int):
 
 def get_category(caption):
     url = f"http://{cfg.CATEGORY_HOST}:10034/category"
+    # url = f"http://{cfg.CATEGORY_HOST}/category"
     querystring = {"prompt": caption}
     payload = ""
     headers = {"accept": "application/json"}
@@ -70,6 +71,7 @@ def get_category(caption):
 
 def get_sentiment(caption):
     url = f"http://{cfg.SENTIMENT_HOST}:10031/sentiment_analysis"
+    # url = f"http://{cfg.SENTIMENT_HOST}/sentiment_analysis"
     querystring = {"prompt": caption}
     payload = ""
     headers = {"accept": "application/json"}
@@ -486,6 +488,34 @@ class BaseOps:
                 out.append(record)
         return out
 
+
+    def get_tagging_status(self):
+        ner_query = {
+            "ner":{"$ne":None}
+        }
+        ner_count = self.post_model.collection.count_documents(ner_query)
+        
+        sentiment_query = {
+            "sentiment":{"$ne":None}
+        }
+        sentiment_count = self.post_model.collection.count_documents(sentiment_query)
+        
+        category_query = {
+            "category":{"$ne":None}
+        }
+        category_count = self.post_model.collection.count_documents(category_query)
+
+        info_query = {
+            "info":{"$ne":None}
+        }
+        info_count = self.post_model.collection.count_documents(info_query)
+        return {
+            "ner":ner_count,
+            "sentiment":sentiment_count,
+            "category":category_count,
+            "info":info_count,            
+        }
+        
 
 class InstagramOps(BaseOps):
     def __init__(self) -> None:

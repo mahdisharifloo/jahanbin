@@ -53,6 +53,7 @@ def get_category_response(payload):
 
     querystring = {"prompt":payload}
     url = f"http://{cfg.CATEGORY_HOST}:10034/category"
+    # url = f"http://{cfg.CATEGORY_HOST}/category"
     headers = {"accept": "application/json"}
 
     response = requests.post(url, headers=headers, params=querystring)

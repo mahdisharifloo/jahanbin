@@ -12,6 +12,7 @@ def get_sentiment_response(payload):
         payload = payload[:1000]
     querystring = {"prompt":payload.encode('utf-8')}
     url = f"http://{cfg.SENTIMENT_HOST}:10031/sentiment_analysis"
+    # url = f"http://{cfg.SENTIMENT_HOST}/sentiment_analysis"
     headers = {
         'accept': '*/*',
         'Content-Type': 'application/json'
