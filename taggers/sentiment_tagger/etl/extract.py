@@ -42,7 +42,7 @@ def run(count):
     
     query = {"sentiment":None}
     today = datetime.combine(date.today(), datetime.min.time())  + timedelta(days=1) 
-    day_limit = 30
+    day_limit = 150
     query = {
     '$and': [
         {"created_at": {"$gt": today - timedelta(days=day_limit)}},

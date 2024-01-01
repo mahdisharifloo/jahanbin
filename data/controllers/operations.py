@@ -490,6 +490,9 @@ class BaseOps:
 
 
     def get_tagging_status(self):
+        all_query = {} 
+        all_count = self.post_model.collection.count_documents(all_query)
+        
         ner_query = {
             "ner":{"$ne":None}
         }
@@ -506,14 +509,15 @@ class BaseOps:
         category_count = self.post_model.collection.count_documents(category_query)
 
         info_query = {
-            "info":{"$ne":None}
+            "information_service_tag":{"$ne":None}
         }
         info_count = self.post_model.collection.count_documents(info_query)
         return {
+            "all_records_in_mongo":all_count,
             "ner":ner_count,
             "sentiment":sentiment_count,
             "category":category_count,
-            "info":info_count,            
+            "information_service":info_count,            
         }
         
 
