@@ -85,7 +85,7 @@ async def sunburst_end_point(charts_time_filter=None,
     return data
 
 
-@router.get("/instagram/sunburst_chart_manual_tags_data", tags=["Instagram"])
+@router.get("/twitter/sunburst_chart_manual_tags_data", tags=["Twitter"])
 async def sunburst_end_point(charts_time_filter=None,
                              current_user: User = Depends(get_current_active_user)):
     data = ops.get_sunburst_chart_manual_data(charts_time_filter)

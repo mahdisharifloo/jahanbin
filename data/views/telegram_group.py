@@ -84,7 +84,7 @@ async def sunburst_end_point(charts_time_filter=None,
     return data
 
 
-@router.get("/instagram/sunburst_chart_manual_tags_data", tags=["Instagram"])
+@router.get("/telegram_groups/sunburst_chart_manual_tags_data", tags=["TelegramGroups"])
 async def sunburst_end_point(charts_time_filter=None,
                              current_user: User = Depends(get_current_active_user)):
     data = ops.get_sunburst_chart_manual_data(charts_time_filter)
@@ -114,7 +114,7 @@ async def get_tag_cload_end_point(days_ago=30,
     return data
 
 
-@router.get("/TelegramGroups/get_tagging_status", tags=["TelegramGroups"])
+@router.get("/telegram_groups/get_tagging_status", tags=["TelegramGroups"])
 async def get_tagging_status_end_point(current_user: User = Depends(get_current_active_user)):
     data = ops.get_tagging_status()
     return data
