@@ -1,21 +1,22 @@
+
 import os
 import sys
+import json
+import random
 import pymongo
-import re 
+import requests
+from wordcloud_fa import WordCloudFa
 from bson.objectid import ObjectId
 from datetime import datetime, timedelta, date
 from persiantools.jdatetime import JalaliDate
 
 
-import random
-import requests
-import json
-from wordcloud_fa import WordCloudFa
-
 root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.insert(0, root_path)
+
+import utils.config as cfg
 from models.app import *
-import utils.config as cfg 
+
 
 
 wc = WordCloudFa(
@@ -130,15 +131,16 @@ class BaseOps:
                     {"manual_information_service_tag": None},
                     {"created_at": {"$gt": today - timedelta(days=day_limit)}},
                     {"created_at": {"$lte": today}},
-                    {"category": {"$in":["اقتصادی","بین الملل","اجتماعی","سیاسی"]}},
-                    {"information_service_tag": {"$ne":"اقدام خودی"}},
+                    {"category": {
+                        "$in": ["اقتصادی", "بین الملل", "اجتماعی", "سیاسی"]}},
+                    {"information_service_tag": {"$ne": "اقدام خودی"}},
                     {"clean_context": {"$nin": [None, [], ""]}},
                 ]}).sort('created_at', pymongo.DESCENDING).limit(1)
             data = [doc for doc in data_doc]
             for d in data:
                 d['_id'] = str(d['_id'])
             return data
-        
+
         data_doc = self.post_model.collection.find(
             {"$and": [
                 {"information_service_tag": inteligence_service_category},
@@ -166,7 +168,9 @@ class BaseOps:
 
     def add_info_service_tag(self, record_id, label):
         query = {"_id": ObjectId(record_id)}
-        data = {'manual_information_service_tag': brian_mission[label]}
+        data = {'manual_information_service_tag': brian_mission[label],
+                "information_service_tag" : brian_mission[label],
+                }
         self.post_model.update(query, data)
         return True
 
@@ -202,7 +206,8 @@ class BaseOps:
             category = {"$ne": None}
         if not inteligence_service_category:
             inteligence_service_category = {"$ne": None}
-        today = datetime.combine(date.today(), datetime.min.time()) + timedelta(days=1)
+        today = datetime.combine(
+            date.today(), datetime.min.time()) + timedelta(days=1)
 
         if time_filtering == "1d":
             day_limit = 1
@@ -254,8 +259,9 @@ class BaseOps:
                 {"information_service_tag": inteligence_service_category},
                 {"sentiment": sentiment},
                 {"clean_context": {"$nin": [None, [], ""]}},
-            ]}
-        data_doc = self.post_model.collection.find(query).sort('created_at', pymongo.DESCENDING).skip(down_range).limit(up_range)
+        ]}
+        data_doc = self.post_model.collection.find(query).sort(
+            'created_at', pymongo.DESCENDING).skip(down_range).limit(up_range)
         data = [doc for doc in data_doc]
 
         for d in data:
@@ -333,16 +339,17 @@ class BaseOps:
     def get_sunburst_chart_data(self, charts_time_filter=None):
         today = datetime.combine(date.today(), datetime.min.time())
         if charts_time_filter:
-            y,m,d = charts_time_filter.split("-")
+            y, m, d = charts_time_filter.split("-")
             if len(m) == 1:
                 m = '0'+m
             if len(d) == 1:
                 d = '0'+d
-            
+
             charts_time_filter = y+'-'+m+'-'+d + 'T00:00:00'
             filter_date = JalaliDate.fromisoformat(charts_time_filter)
             converted_filter_date = filter_date.to_gregorian()
-            converted_filter_datetime = datetime.combine(converted_filter_date, datetime.min.time())
+            converted_filter_datetime = datetime.combine(
+                converted_filter_date, datetime.min.time())
 
             day_limit = today - converted_filter_datetime
             day_limit = day_limit.days
@@ -373,6 +380,52 @@ class BaseOps:
         # data = str(data)
         return data
 
+
+    def get_sunburst_chart_manual_data(self, charts_time_filter=None):
+        today = datetime.combine(date.today(), datetime.min.time())
+        if charts_time_filter:
+            y, m, d = charts_time_filter.split("-")
+            if len(m) == 1:
+                m = '0'+m
+            if len(d) == 1:
+                d = '0'+d
+
+            charts_time_filter = y+'-'+m+'-'+d + 'T00:00:00'
+            filter_date = JalaliDate.fromisoformat(charts_time_filter)
+            converted_filter_date = filter_date.to_gregorian()
+            converted_filter_datetime = datetime.combine(
+                converted_filter_date, datetime.min.time())
+
+            day_limit = today - converted_filter_datetime
+            day_limit = day_limit.days
+
+        else:
+            day_limit = 180
+        info_tags = {
+            1: "بزرگنمایی مشکلات و نارسایی ها",
+            2: "القائ ضعف اعتقادی در آجا",
+            3: "تحریک کارکنان و تشویش اذهان آنها",
+            4: "بزرگنمایی مشکلات مدیریتی و اعتمادزدایی",
+            5: "بزرگنمایی تضادها و اختلاف ها",
+            6: "اقدام خودی"
+        }
+        data = []
+        for item in info_tags.values():
+            data.append(
+                {
+                    "name": item,
+                    "value": self.post_model.collection.count_documents(
+                        {"$and": [
+                            {"created_at": {"$gt": today -
+                                            timedelta(days=day_limit)}},
+                            {"created_at": {"$lte": today}},
+                            {"manual_information_service_tag": item},
+                        ]})}
+            )
+        # data = str(data)
+        return data
+
+
     def get_rule_base_info_service_tag(self, caption):
         category = get_category(caption)
         sentiment = get_sentiment(caption)
@@ -393,70 +446,65 @@ class BaseOps:
             "سیاسی",
         ]
         khodi_list = [
-            "نیرو","شهید","فرمانده",
-            "نزاجا","نهاجا","نداجا",
-            "زمینی","هوایی","دریایی",
-            "دفاع","شناور","یگان",
+            "نیرو", "شهید", "فرمانده",
+            "نزاجا", "نهاجا", "نداجا",
+            "زمینی", "هوایی", "دریایی",
+            "دفاع", "شناور", "یگان",
         ]
         modiriati = [
-            "مدیر","مسئول","معاول",
-            "رئیس","کمیسیون","پارلمان"
+            "مدیر", "مسئول", "معاول",
+            "رئیس", "کمیسیون", "پارلمان"
         ]
         naresayei = [
-            "پول","مال","هزینه",
-            "مسکن","خونه","اجاره",
-            "سند","سازمان",
+            "پول", "مال", "هزینه",
+            "مسکن", "خونه", "اجاره",
+            "سند", "سازمان",
         ]
         tahrik = [
-            "آزادی","اعتراض","تحریک"
-            "خامنه","اعتراض","تحریک"
+            "آزادی", "اعتراض", "تحریک"
+            "خامنه", "اعتراض", "تحریک"
         ]
         tazad = [
-            "آخوند","عرزشی","ارزشی"
-            "بسیجی","مزدور","خرزشی"
+            "آخوند", "عرزشی", "ارزشی"
+            "بسیجی", "مزدور", "خرزشی"
         ]
         eteghadi = [
-            "حجاب","دین","اسلام"
-            "حجاب","امام","امام"
+            "حجاب", "دین", "اسلام"
+            "حجاب", "امام", "امام"
         ]
-        
+
         if category in valid_categories:
             for item in khodi_list:
                 if item in caption:
                     return decisions[6]
-                
+
             for item in modiriati:
                 if item in caption:
                     return decisions[4]
-            
-                
+
             for item in naresayei:
                 if item in caption:
                     return decisions[1]
-            
-                
+
             for item in tahrik:
                 if item in caption:
                     return decisions[3]
-            
-                
+
             for item in tazad:
                 if item in caption:
                     return decisions[5]
-            
-                
+
             for item in eteghadi:
                 if item in caption:
                     return decisions[2]
-            
 
             if category == valid_categories[0]:
                 return random.choice(
-                    [decisions[1], decisions[4] ])
-            if sentiment in ['positive', "very positive", "mixed"] :
+                    [decisions[1], decisions[4]])
+            if sentiment in ['positive', "very positive", "mixed"]:
                 return decisions[6]
             choice = random.choice([
-                decisions[2], decisions[3],decisions[5]
+                decisions[2], decisions[3], decisions[5]
             ])
             return choice
         else:
@@ -488,38 +536,43 @@ class BaseOps:
                 out.append(record)
         return out
 
-
     def get_tagging_status(self):
-        all_query = {} 
+        all_query = {}
         all_count = self.post_model.collection.count_documents(all_query)
-        
+
         ner_query = {
-            "ner":{"$ne":None}
+            "ner": {"$ne": None}
         }
         ner_count = self.post_model.collection.count_documents(ner_query)
-        
+
         sentiment_query = {
-            "sentiment":{"$ne":None}
+            "sentiment": {"$ne": None}
         }
-        sentiment_count = self.post_model.collection.count_documents(sentiment_query)
-        
+        sentiment_count = self.post_model.collection.count_documents(
+            sentiment_query)
+
         category_query = {
-            "category":{"$ne":None}
+            "category": {"$ne": None}
         }
-        category_count = self.post_model.collection.count_documents(category_query)
+        category_count = self.post_model.collection.count_documents(
+            category_query)
 
         info_query = {
-            "information_service_tag":{"$ne":None}
+            "information_service_tag": {"$ne": None}
+        }
+        manual_info_query = {
+            "manual_information_service_tag": {"$ne": None}
         }
         info_count = self.post_model.collection.count_documents(info_query)
         return {
-            "all_records_in_mongo":all_count,
-            "ner":ner_count,
-            "sentiment":sentiment_count,
-            "category":category_count,
-            "information_service":info_count,            
+            "all_records_in_mongo": all_count,
+            "ner": ner_count,
+            "sentiment": sentiment_count,
+            "category": category_count,
+            "information_service": info_count,
+            "manual_information_service_tag":manual_info_query
         }
-        
+
 
 class InstagramOps(BaseOps):
     def __init__(self) -> None:

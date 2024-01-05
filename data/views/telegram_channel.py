@@ -1,3 +1,4 @@
+
 import os
 import sys
 from fastapi import Depends
@@ -6,10 +7,11 @@ from fastapi import APIRouter
 root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.insert(0, root_path)
 
-from models.auth import *
-from controllers.auth import *
-from controllers.operations import TelegramChannelOps
 from utils.logger import Logger
+from controllers.operations import TelegramChannelOps
+from controllers.auth import *
+from models.auth import *
+
 log = Logger("access_api")
 
 
@@ -51,26 +53,27 @@ async def info_service_tag_end_point(record_id, label,
 @router.get("/telegram_channel/get_statistics", tags=["TelegramChannels"])
 async def get_statistics_end_point(current_user: User = Depends(get_current_active_user)):
     data = ops.get_statistics()
-    return data 
+    return data
+
 
 @router.get("/telegram_channel/get_news", tags=["TelegramChannels"])
 async def news_end_point(page=1,
-                   sentiment='',
-                   category='',
-                   inteligence_service_category='',
-                   time_filtering="6m",
-                   current_user: User = Depends(get_current_active_user)
-                   ):
+                         sentiment='',
+                         category='',
+                         inteligence_service_category='',
+                         time_filtering="6m",
+                         current_user: User = Depends(get_current_active_user)
+                         ):
     data, pages = ops.get_news(page, sentiment, category,
-                           inteligence_service_category,
-                           time_filtering)
+                               inteligence_service_category,
+                               time_filtering)
     return {"news": data, "pages": pages}
 
 
 @router.get("/telegram_channel/search", tags=["TelegramChannels"])
 async def search_news_end_point(query, page=1, time_filtering="6m",
                                 current_user: User = Depends(get_current_active_user)):
-    data, pages = ops.search_news(query,page,time_filtering)
+    data, pages = ops.search_news(query, page, time_filtering)
     return {"news": data, "pages": pages}
 
 
@@ -81,23 +84,32 @@ async def sunburst_end_point(charts_time_filter=None,
     return data
 
 
+@router.get("/instagram/sunburst_chart_manual_tags_data", tags=["Instagram"])
+async def sunburst_end_point(charts_time_filter=None,
+                             current_user: User = Depends(get_current_active_user)):
+    data = ops.get_sunburst_chart_manual_data(charts_time_filter)
+    return data
+
+
 @router.get("/telegram_channel/last_news", tags=["TelegramChannels"])
 async def last_news_end_point(count=5,
-                            current_user: User = Depends(
-                                get_current_active_user)
-                            ):
+                              current_user: User = Depends(
+                                  get_current_active_user)
+                              ):
     data = ops.last_news(count)
     return {"news": data}
 
+
 @router.get("/telegram_channel/rule_base_info_service", tags=["TelegramChannels"])
 async def rule_base_info_service_end_point(caption=None,
-                             current_user: User = Depends(get_current_active_user)):
+                                           current_user: User = Depends(get_current_active_user)):
     data = ops.get_rule_base_info_service_tag(caption)
     return data
 
+
 @router.get("/telegram_channel/get_tag_cload", tags=["TelegramChannels"])
 async def get_tag_cload_end_point(days_ago=30,
-                             current_user: User = Depends(get_current_active_user)):
+                                  current_user: User = Depends(get_current_active_user)):
     data = ops.generate_word_frequencies(int(days_ago))
     return data
 
