@@ -170,6 +170,7 @@ class BaseOps:
         query = {"_id": ObjectId(record_id)}
         data = {'manual_information_service_tag': brian_mission[label],
                 "information_service_tag" : brian_mission[label],
+                "manual_add_label_datetime":datetime.now()
                 }
         self.post_model.update(query, data)
         return True
@@ -382,7 +383,7 @@ class BaseOps:
 
 
     def get_sunburst_chart_manual_data(self, charts_time_filter=None):
-        today = datetime.combine(date.today(), datetime.min.time())
+        today =  datetime.now()
         if charts_time_filter:
             y, m, d = charts_time_filter.split("-")
             if len(m) == 1:
@@ -400,7 +401,7 @@ class BaseOps:
             day_limit = day_limit.days
 
         else:
-            day_limit = 180
+            day_limit = 300
         info_tags = {
             1: "بزرگنمایی مشکلات و نارسایی ها",
             2: "القائ ضعف اعتقادی در آجا",
@@ -411,16 +412,16 @@ class BaseOps:
         }
         data = []
         for item in info_tags.values():
+            v = self.post_model.collection.count_documents(
+                        {"$and": [
+                            {"manual_add_label_datetime": {"$gt": today -
+                                            timedelta(days=day_limit)}},
+                            {"manual_information_service_tag": item},
+                        ]})
             data.append(
                 {
                     "name": item,
-                    "value": self.post_model.collection.count_documents(
-                        {"$and": [
-                            {"created_at": {"$gt": today -
-                                            timedelta(days=day_limit)}},
-                            {"created_at": {"$lte": today}},
-                            {"manual_information_service_tag": item},
-                        ]})}
+                    "value": v}
             )
         # data = str(data)
         return data
