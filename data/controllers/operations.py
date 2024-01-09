@@ -129,8 +129,8 @@ class BaseOps:
             data_doc = self.post_model.collection.find(
                 {"$and": [
                     {"manual_information_service_tag": None},
-                    {"created_at": {"$gt": today - timedelta(days=day_limit)}},
-                    {"created_at": {"$lte": today}},
+                    # {"created_at": {"$gt": today - timedelta(days=day_limit)}},
+                    # {"created_at": {"$lte": today}},
                     {"category": {
                         "$in": ["اقتصادی", "بین الملل", "اجتماعی", "سیاسی"]}},
                     {"information_service_tag": {"$ne": "اقدام خودی"}},
