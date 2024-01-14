@@ -1,0 +1,41 @@
+version: '3'
+
+services:
+  mongodb:
+    image: mongo:5.0
+    ports:
+      - 60606:27017
+    expose:
+      - 60606
+    volumes:
+      - ../mongo-db-volume:/data/db
+    command: [--auth]
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=jahanbin
+      - MONGO_INITDB_ROOT_PASSWORD=jahanbinMongoP@ssw0rd
+      - MONGO_INITDB_DATABASE=data_pipline
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongo mongodb:27017/data_pipline --quiet
+      interval: 10s
+      timeout: 10s
+      retries: 5
+    restart: always
+    networks:
+      - db_network
+
+  lifeweb_gateway:
+    #image: gateway:latest 
+    build: ./gateway/
+    ports:
+      - 10020:10020
+    restart: always
+    networks:
+      - db_network
+
+
+volumes:
+  mongo-db-volume:
+
+networks:
+  db_network:
+    driver: bridge
